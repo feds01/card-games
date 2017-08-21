@@ -60,14 +60,13 @@ def handle_cards():
     # 0x0 value for player 1 winner
     # 0x1 value for player 2 winner
     while not final_handle:
-        if turns == 10000000:
-            dump_held_cards(do_p=True, title='handle')
-
         if check_len():
             break
+            
         if card_buffer[0][1][0] == card_buffer[1][1][0]:
             handle_similar_cards()
             final_handle = True
+        
         else:
             if card_buffer[0][1][0] is 8 and card_buffer[1][1][0] is 0:
                 winner += 1
@@ -126,9 +125,6 @@ def handle_similar_cards():
     pull_player_deck(0x0), pull_player_deck(0x1)
     challenge = handle_cards()
 
-    if turns == 1000000:
-        dump_held_cards(do_p=True, title='similar cards handle')
-
     if challenge[0]:
         for card_set in reversed(stack_buffer):
             for card in card_set:
@@ -173,9 +169,7 @@ def dump_held_cards(do_p=False, title='default debug title'):
 def check_len():
     global p1_deck, p2_deck
 
-    if len(p1_deck) == 0:
-        return True
-    if len(p2_deck) == 0:
+    if len(p1_deck) == 0 or len(p2_deck) == 0:
         return True
     else:
         return False
@@ -200,15 +194,7 @@ def play(times):
 
         while not check_len():
             smart_pull(turns), handle_cards()
-
-            if turns >= 50000:
-                time.sleep(5)
-                dump_held_cards(do_p=True, title='emergency dump')
-
             turns += 1
 
-        print(turns)
+        print('%s turns to complete the game' % turns)
         times -= 1
-
-# play the game 20 times
-play(20)
